@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
-
 namespace functional_programing_practice.Chapters
 {
     public class Chapter1 : IChapter
@@ -49,6 +50,12 @@ namespace functional_programing_practice.Chapters
                 Console.WriteLine($"divideBy改变参数顺序:{ divideBy(2, 10)}");
             }
         }
+
+        internal class DbLogger
+        {
+            public void Log(string message)
+            => Chapter1Extensions.Connect("localhost;uid", c => c.CreateCommand().ExecuteNonQuery());
+        }
     }
 
     public static class Chapter1Extensions
@@ -60,5 +67,16 @@ namespace functional_programing_practice.Chapters
         //    Result R(T2 t2, T1 t1) => default(Result);
         //    return R;
         //}
+
+        public static R Connect<R>(string connStr, Func<IDbConnection, R> f)
+            => Using(new SqlConnection(connStr), conn => { conn.Open(); return f(conn); });
+
+        public static R Using<TDisp, R>(TDisp disposable, Func<TDisp, R> f) where TDisp : IDisposable
+        {
+            using (var disp = disposable)
+            {
+                return f(disp);
+            }
+        }
     }
 }
