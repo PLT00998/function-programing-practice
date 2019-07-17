@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using functional_programing_practice.Chapters;
+using System;
 
 namespace functional_programing_practice
 {
@@ -10,6 +7,9 @@ namespace functional_programing_practice
     {
         static void Main(string[] args)
         {
+            IChapter chapter = new Chapter1();
+            chapter.Experiment();
+            Console.Read();
         }
     }
 }
