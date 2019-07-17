@@ -7,7 +7,8 @@ namespace functional_programing_practice.Chapters
     {
         public void Experiment()
         {
-            WhereAndOrderDoesnotImpactOriginalList.Try();
+            //WhereAndOrderDoesnotImpactOriginalList.Try();
+            AdaptFunction_SwapArgs.Try();
         }
 
         internal class WhereAndOrderDoesnotImpactOriginalList
@@ -25,5 +26,39 @@ namespace functional_programing_practice.Chapters
                 Console.WriteLine($"filtered:{string.Join(",", filtered)}");
             }
         }
+
+        internal class AdaptFunction_SwapArgs
+        {
+            public static void Try()
+            {
+                Func<int, int, int> divide = (x, y) => x / y; //相除委托
+                Console.WriteLine($"divide(正常使用):{divide(10, 2)}"); //应该等于5
+                Console.WriteLine("如果委托消费方的习惯是[除数(y)在前]，那么在不修改devide的情况下可增加一个[适配器函数]");
+
+
+                /* 不优雅的一种
+                 Result SwapArgs<Y,X,Result>(Func<X,Y,Result> originalFunc, Y y, X x)
+                {
+                    return originalFunc(x, y);
+                }
+
+                int r=SwapArgs(divide, 10, 2);
+                 */
+
+                var divideBy = divide.SwapArgs();
+                Console.WriteLine($"divideBy改变参数顺序:{ divideBy(2, 10)}");
+            }
+        }
+    }
+
+    public static class Chapter1Extensions
+    {
+        public static Func<T2, T1, Result> SwapArgs<T1, T2, Result>(this Func<T1, T2, Result> originalFunc)
+        //=> (y, x) => default(Result);
+        => (y, x) => originalFunc(x, y);
+        //{
+        //    Result R(T2 t2, T1 t1) => default(Result);
+        //    return R;
+        //}
     }
 }
